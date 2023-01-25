@@ -33,7 +33,8 @@ public class WebViewStore: ObservableObject {
       subscriber(for: \.serverTrust),
       subscriber(for: \.canGoBack),
       subscriber(for: \.canGoForward),
-      subscriber(for: \.scrollView.contentOffset)
+      subscriber(for: \.scrollView.contentOffset),
+      subscriber(for: \.scrollView.isDragging)
     ]
     if #available(iOS 15.0, macOS 12.0, *) {
       observers += [
