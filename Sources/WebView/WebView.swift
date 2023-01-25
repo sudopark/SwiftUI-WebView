@@ -32,7 +32,8 @@ public class WebViewStore: ObservableObject {
       subscriber(for: \.hasOnlySecureContent),
       subscriber(for: \.serverTrust),
       subscriber(for: \.canGoBack),
-      subscriber(for: \.canGoForward)
+      subscriber(for: \.canGoForward),
+      subscriber(for: \.scrollView.contentOffset)
     ]
     if #available(iOS 15.0, macOS 12.0, *) {
       observers += [
