@@ -3,7 +3,7 @@ import Combine
 import WebKit
 
 @dynamicMemberLookup
-public class WebViewStore: ObservableObject {
+public class WebViewStore: NSObject, ObservableObject {
   @Published public var webView: WKWebView {
     didSet {
       setupObservers()
@@ -11,8 +11,9 @@ public class WebViewStore: ObservableObject {
   }
   
   public init(webView: WKWebView = WKWebView()) {
-    self.webView = webView
-    setupObservers()
+      self.webView = webView
+      super.init()
+      setupObservers()
   }
   
   private func setupObservers() {
@@ -53,6 +54,8 @@ public class WebViewStore: ObservableObject {
       observers.append(subscriber(for: \.fullscreenState))
     }
 #endif
+      
+    self.webView.uiDelegate = self
   }
   
   private var observers: [NSKeyValueObservation] = []
@@ -60,6 +63,21 @@ public class WebViewStore: ObservableObject {
   public subscript<T>(dynamicMember keyPath: KeyPath<WKWebView, T>) -> T {
     webView[keyPath: keyPath]
   }
+}
+
+extension WebViewStore: WKUIDelegate {
+    
+    public func webView(
+        _ webView: WKWebView,
+        createWebViewWith configuration: WKWebViewConfiguration,
+        for navigationAction: WKNavigationAction,
+        windowFeatures: WKWindowFeatures
+    ) -> WKWebView? {
+        if navigationAction.targetFrame == nil {
+            webView.load(navigationAction.request)
+        }
+        return nil
+    }
 }
 
 #if os(iOS)
